@@ -1,0 +1,34 @@
+struct Endereco {
+    string logradouro;
+    string cidade;
+    string estado;
+    string cep;
+};
+
+class Pessoa {
+    attribute string nome;
+    attribute int idade;
+    attribute Endereco endereco;
+};
+
+class Aluno extends Pessoa {
+    attribute string matricula;
+    attribute list<string> disciplinas;
+};
+
+class Professor extends Pessoa {
+    attribute string codigoFuncionario;
+    attribute list<string> disciplinasLecionadas;
+};
+
+class Turma {
+    attribute string codigoTurma;
+    attribute Professor professor;
+    attribute list<Aluno> alunos;
+};
+
+class Escola {
+    attribute string nome;
+    attribute Endereco endereco;
+    attribute list<Turma> turmas;
+};
