@@ -1,6 +1,6 @@
 <?php
 
-namespace commandFactorys;
+namespace helpers\commandFactorys;
 
 class StructureCommandFactory
 {
@@ -9,6 +9,17 @@ class StructureCommandFactory
     private string $model_name = "";
     private string $migration_name = "";
     private string $command = "php artisan make:";
+    private static ?StructureCommandFactory $instance = null;
+
+    private function __construct() {}
+
+    public static function getInstance(): StructureCommandFactory
+    {
+        if(is_null(self::$instance)) {
+            self::$instance = new StructureCommandFactory();
+        }
+        return self::$instance;
+    }
 
     public function setName($name): StructureCommandFactory {
         if(!empty($this->name)) {

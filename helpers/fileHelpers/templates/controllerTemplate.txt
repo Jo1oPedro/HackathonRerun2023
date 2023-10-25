@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\{model};
+use Illuminate\Http\Request;
+
+class {controllerName}Controller extends Controller
+{
+    //{$attributes}
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        {indexContent}
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        {createContent}
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        {storeContent}
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({methodParameter})
+    {
+        {showContent}
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit({methodParameter})
+    {
+        {editContent}
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, {methodParameter})
+    {
+        {updateContent}
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({methodParameter})
+    {
+        {destroyContent}
+    }
+}

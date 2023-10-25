@@ -1,9 +1,14 @@
 <?php
-$lines = file('./arquivosDeEntrada/arquivoDeEntrada2.txt', FILE_IGNORE_NEW_LINES);
 
-require __DIR__ . "/../commandFactorys/StructureCommandFactory.php";
+namespace parser\parser;
 
-use commandFactorys\StructureCommandFactory;
+require __DIR__ . '/../vendor/autoload.php';
+
+//use helpers\commandFactorys\StructureCommandFactory;
+use helpers\fileHelpers\FileCreator;
+use helpers\fileHelpers\FileWriter;
+
+$lines = file(__DIR__ . '/../arquivosDeEntrada/arquivoDeEntrada2.txt', FILE_IGNORE_NEW_LINES);
 
 $classes = array();
 $structs = array();
@@ -31,14 +36,14 @@ foreach ($lines as $line) {
         }
     } elseif ($insideClassOrStruct) {
         if (strpos($line, '}') !== false) {
-            $object = new stdClass();
+            $object = new \stdClass();
             $object->name = $objectName;
             $object->type = $objectType;
             $object->extends = $extendsAux;
             $atributosObj = [];
             foreach($attributes as $attr) {
                 $words = str_word_count($attr, 1);
-                $atributo = new stdClass();
+                $atributo = new \stdClass();
                 if(count($words) === 4) {
                     $atributo->struct = true;
                     $atributo->type = $words[2];
@@ -57,9 +62,9 @@ foreach ($lines as $line) {
             $object->atributos = $atributosObj;
             if(isset($object->type)) {
                 if($object->type === 'struct') {
-                    $structs[] = $object;
+                    $structs[$object->name] = $object;
                 }else if($object->type === 'class') {
-                    $classes[] = $object;
+                    $classes[$object->name] = $object;
                 }
             }
             $attributes = array();
@@ -74,10 +79,12 @@ foreach ($lines as $line) {
     }
 }
 
-$factory = new StructureCommandFactory();
 foreach($classes as $class) {
-    $factory->setName($class->name)->setController()->setModel()->executeCommand();
-    $factory->setMigration($class->name)->executeCommand();
+    die(var_dump($class->atributos));
+    FileCreator::getInstance()
+        ->setName($class->name)
+        ->setAttributes($class->atributos)
+        ->createController()
+        ->createModel()
+        ->createMigration();
 }
-
-var_dump($classes[0]->name);
