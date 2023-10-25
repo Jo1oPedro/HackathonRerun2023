@@ -154,6 +154,33 @@ class FileCreator
         return $this;
     }
 
+    public function createModelWithRelations(string $relation, array $classes)
+    {
+        if(empty($this->name)) {
+            throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
+        }
+
+        if (empty($relation))
+        {
+            return $this->createModel();
+        }
+
+        $relationContent = $this->generateRelation($relation, true);
+
+        $modelContent = file_get_contents(__DIR__ . "/templates/modelTemplate.txt");
+        $modelContent = str_replace(
+            $this->modelContentTemplate,
+            [
+                $this->ucFirstName,
+                $relationContent
+            ],
+            $modelContent
+        );
+        file_put_contents(__DIR__ . "/../../app/Models/" . $this->ucFirstName . ".php", $modelContent);
+        return $this;
+
+    }
+
     public function createMigration()
     {
         if(empty($this->name)) {
@@ -185,5 +212,29 @@ class FileCreator
             };
         }
         return $content;
+    }
+
+    private function verifyRelations(string $class, array $classes)
+    {
+
+    }
+
+    private function generateRelation(string $class, bool $extends)
+    {
+        $text = "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}";
+        return $text;
+    }
+
+    private function getRelation(string $class, bool $extends)
+    {
+        if ($extends)
+        {
+            return 'return $this->hasOne(' . ucfirst($class) . '::class);';
+        }
+
+        foreach ($this->attributes as $attribute)
+        {
+
+        }
     }
 }

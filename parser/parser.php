@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use helpers\fileHelpers\FileCreator;
 use helpers\fileHelpers\FileWriter;
 
-$lines = file(__DIR__ . '/../arquivosDeEntrada/arquivoDeEntrada2.txt', FILE_IGNORE_NEW_LINES);
+$lines = file(__DIR__ . '/../arquivosDeEntrada/arquivoDeEntrada1.txt', FILE_IGNORE_NEW_LINES);
 
 $classes = [];
 $classesWithExtends = [];
@@ -84,11 +84,21 @@ foreach ($lines as $line) {
     }
 }
 
-foreach($classes as $class) {
+//foreach($classes as $class) {
+//    FileCreator::getInstance()
+//        ->setName($class->name)
+//        ->setAttributes($class->atributos)
+//        ->createController()
+//        ->createModel()
+//        ->createMigration();
+//}
+
+$allClasses = array_merge($classes, $classesWithExtends);
+
+foreach ($allClasses as $class) {
     FileCreator::getInstance()
         ->setName($class->name)
         ->setAttributes($class->atributos)
-        ->createController()
-        ->createModel()
-        ->createMigration();
+        ->createModelWithRelations($class->extends, $classes);
+
 }
