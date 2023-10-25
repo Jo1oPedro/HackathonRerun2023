@@ -10,8 +10,9 @@ use helpers\fileHelpers\FileWriter;
 
 $lines = file(__DIR__ . '/../arquivosDeEntrada/arquivoDeEntrada2.txt', FILE_IGNORE_NEW_LINES);
 
-$classes = array();
-$structs = array();
+$classes = [];
+$classesWithExtends = [];
+$structs = [];
 $insideClassOrStruct = false;
 $extendsAux = false;
 
@@ -64,7 +65,11 @@ foreach ($lines as $line) {
                 if($object->type === 'struct') {
                     $structs[$object->name] = $object;
                 }else if($object->type === 'class') {
-                    $classes[$object->name] = $object;
+                    if($object->extends) {
+                        $classesWithExtends[$object->name] = $object;
+                    } else {
+                        $classes[$object->name] = $object;
+                    }
                 }
             }
             $attributes = array();
@@ -80,7 +85,6 @@ foreach ($lines as $line) {
 }
 
 foreach($classes as $class) {
-    die(var_dump($class->atributos));
     FileCreator::getInstance()
         ->setName($class->name)
         ->setAttributes($class->atributos)
