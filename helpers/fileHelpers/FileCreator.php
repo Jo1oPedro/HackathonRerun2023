@@ -186,4 +186,74 @@ class FileCreator
         }
         return $content;
     }
+
+    private function getMigrationRelationships(): string
+    {
+        $content = "";
+        foreach($this->attributes as $attribute) {
+            if(!in_array($attribute->type, ['string', 'int', 'float'])) {
+                $tableName = strtolower($attribute->value);
+                $foreigngName = $tableName . "_id";
+                $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+            }
+        }
+        return $content;
+    }
+
+    private function verifyRelationshipsManyToMany($classes, $classAux, $nameClass) {
+        if (substr($nameClass, -1) === 's') {
+            $nameClass = rtrim($nameClass, 's');
+        }
+        foreach($classes as $class) {
+            if($class->name == $nameClass) {
+                foreach($class->atributos as $atributo) {
+                    if(!in_array($atributo->type, ['string', 'int', 'float']) && strpos($atributo->type, 'list') !== false && strpos($atributo->type, $classAux->name) !== false) {                 
+                        return $class;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function createMigrationRelationships($classes): string
+    {
+        $content = "";
+        $migrateRelationships = [];
+        foreach($classes as $class) {
+            foreach($class->atributos as $atributo) {
+                if(!in_array($atributo->type, ['string', 'int', 'float'])) {
+                    $tableName = strtolower($atributo->value);
+                    $foreigngName = $tableName . "_id";
+                    if(strpos($atributo->type, 'list') !== false) {
+                        $manyToMany = $this->verifyRelationshipsManyToMany($classes, $class, ucfirst($atributo->value));
+                        if($manyToMany !== false) {
+                            //$this->createTablePivot();
+                            $tableName = (string)$class->name . "_" . $manyToMany->name;
+                            $foreigngName = $tableName . "_id";
+                            $content .= (string)$class->name . "\n\t\t";
+                            $content .= "MANYTOMANY" . "\n\t\t";
+                            continue;
+                        }
+                        //$content .= ucfirst($tableName) . "\n\t\t";
+                        $tableName = $class->name;
+                        $foreigngName = $tableName . "_id";
+                        $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                        $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+                        $migrateRelationships[$tableName][] = $content;
+                        continue;
+                    }
+                    //$content .= $class->name . "\n\t\t";
+                    $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                    $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+                    $migrateRelationships[$class->name][] = $content;
+                    continue;
+                } 
+                $content = "";
+            }
+        }   
+        var_dump($migrateRelationships);
+        return $content;
+    }
 }

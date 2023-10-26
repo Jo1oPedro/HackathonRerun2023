@@ -1,12 +1,11 @@
 <?php
-namespace parser\parser;
-
-require __DIR__ . '/../vendor/autoload.php';
+namespace helpers\parser;
 
 use helpers\fileHelpers\FileCreator;
 
-class Parser
+class ClassParser
 {   
+
     private static $classes;
     private static $structs;
     private static $classesWithExtends;
@@ -20,7 +19,7 @@ class Parser
     {
         $atributosObj = [];
         foreach ($attributes as $attr) {
-            $words = str_word_count($attr, 1);
+            $words = explode(" ", $attr);
             $atributo = new \stdClass();
 
             if (count($words) === 4) {
@@ -85,9 +84,8 @@ class Parser
                         } else if ($object->type === 'class') {
                             if($object->extends) {
                                 self::$classesWithExtends[$object->name] = $object;
-                            } else {
-                                self::$classes[$object->name] = $object;
                             }
+                            self::$classes[$object->name] = $object;
                         }
                     }
                     $attributes = [];
@@ -104,16 +102,22 @@ class Parser
     }
     public static function createFile($file) {
         self::parseFile($file);
+        //var_dump(self::$classes);exit;
+
+        $r = FileCreator::getInstance()
+        ->createMigrationRelationships(self::$classes);
+        var_dump($r);exit;
+        
+
+        //var_dump(self::$classes);exit;
         foreach (self::$classes as $class) {
-            die(var_dump($class->atributos));
+            //die(var_dump($class->atributos));
             FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
-                ->createController()
-                ->createModel()
+                // ->createController()
+                // ->createModel()
                 ->createMigration();
         }
     }
 }
-
-Parser::createFile('/../arquivosDeEntrada/arquivoDeEntrada2.txt');
