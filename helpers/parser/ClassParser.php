@@ -4,7 +4,7 @@ namespace helpers\parser;
 use helpers\fileHelpers\FileCreator;
 
 class ClassParser
-{   
+{
 
     private static $classes;
     private static $structs;
@@ -77,7 +77,7 @@ class ClassParser
                     $object->name = $objectName;
                     $object->type = $objectType;
                     $object->extends = $extendsAux;
-                    $object->atributos = self::parseAttributes($attributes);              
+                    $object->atributos = self::parseAttributes($attributes);
                     if (isset($object->type)) {
                         if ($object->type === 'struct') {
                             self::$structs[$object->name] = $object;
@@ -128,5 +128,7 @@ class ClassParser
                 ->createController()
                 ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
+
+        //FileCreator::finalizeModelCreation();
     }
 }

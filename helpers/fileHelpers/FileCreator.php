@@ -33,11 +33,13 @@ class FileCreator
     ];
 
     private static ?FileCreator $fileCreator = null;
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public static function getInstance(): FileCreator
     {
-        if(is_null(self::$fileCreator)) {
+        if (is_null(self::$fileCreator)) {
             self::$fileCreator = new FileCreator();
         }
         return self::$fileCreator;
@@ -58,10 +60,10 @@ class FileCreator
     }
     public function createController(): FileCreator
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
-        if(is_null($this->attributes)) {
+        if (is_null($this->attributes)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem os atributos');
         }
 
@@ -103,7 +105,7 @@ class FileCreator
         return '$' . "data = " . '$' . "request->all();\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
-    private function getShowContent():string
+    private function getShowContent(): string
     {
         return "view('{$this->lowerName}s.show');";
     }
@@ -115,7 +117,7 @@ class FileCreator
 
     private function getUpdateContent(): string
     {
-        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' ."{$this->lowerName}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "{$this->lowerName}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
     private function getDestroyContent(): string
@@ -126,7 +128,7 @@ class FileCreator
     private function getControllerAttributes(): string
     {
         $content = "";
-        foreach($this->attributes as $attribute) {
+        foreach ($this->attributes as $attribute) {
             $content .= match ($attribute->type) {
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
@@ -138,7 +140,7 @@ class FileCreator
 
     public function createModel()
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
 
@@ -184,7 +186,7 @@ class FileCreator
     public function getMigrationFields(): string
     {
         $content = "";
-        foreach($this->attributes as $attribute) {
+        foreach ($this->attributes as $attribute) {
             $content .= match ($attribute->type) {
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
@@ -199,10 +201,10 @@ class FileCreator
         if (substr($nameClass, -1) === 's') {
             $nameClass = rtrim($nameClass, 's');
         }
-        foreach($classes as $class) {
-            if($class->name == $nameClass) {
-                foreach($class->atributos as $atributo) {
-                    if(!in_array($atributo->type, ['string', 'int', 'float']) && strpos($atributo->type, 'list') !== false && strpos($atributo->type, $classAux->name) !== false) {                 
+        foreach ($classes as $class) {
+            if ($class->name == $nameClass) {
+                foreach ($class->atributos as $atributo) {
+                    if (!in_array($atributo->type, ['string', 'int', 'float']) && strpos($atributo->type, 'list') !== false && strpos($atributo->type, $classAux->name) !== false) {
                         return $class;
                     }
                 }
@@ -261,7 +263,7 @@ class FileCreator
                         $migrationsRelationships[strtolower($class->name)] = $content;
                     }
                     continue;
-                } 
+                }
                 $content = "";
             }
         }   
