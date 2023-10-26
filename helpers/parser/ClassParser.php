@@ -108,7 +108,9 @@ class ClassParser
             FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
-                ->createModelWithRelations($class->extends ?? "", self::$classes);
+                ->createController()
+                ->createModelWithRelations($class->extends ?? "", self::$classes)
+                ->createMigration();
         }
 
         FileCreator::finalizeModelCreation();

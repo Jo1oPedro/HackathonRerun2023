@@ -156,7 +156,7 @@ class FileCreator
         return $this;
     }
 
-    public function createModelWithRelations(string $relation, array $classes)
+    public function createModelWithRelations(string $relation, array $classes): FileCreator
     {
         if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
@@ -224,6 +224,7 @@ class FileCreator
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
                 "float" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
+                default => ""
             };
         }
         return $content;
