@@ -329,4 +329,17 @@ class FileCreator
         return 'return $this->hasOne(' . ucfirst($class) . '::class);';
     }
 
+    public static function finalizeModelCreation()
+    {
+        $files =  scandir(__DIR__ . "/../../app/Models");
+        $i = 0;
+
+        foreach ($files as $file) {
+            if ($i < 2) {
+                $i++;
+                continue;
+            }
+            file_put_contents(__DIR__ . "/../../app/Models/" . $file, "}", FILE_APPEND);
+        }
+    }
 }
