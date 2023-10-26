@@ -216,16 +216,18 @@ class FileCreator
         return $content;
     }
 
-    private function textRelation(string $class, bool $extends)
+    private function textRelation(string $class, bool $extends): string
     {
-        return "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}";
+        return "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}\n\t";
     }
 
-    private function generateRelation(bool $extends, string $class = "")
+    private function generateRelation(bool $extends, string $class = ""): string
     {
         $text = "";
         if ($extends)
         {
+            $content = $this->textRelation($this->name, false);
+            file_put_contents(__DIR__ . "/../../app/Models/" . $this->ucFirstName . ".php", $content, FILE_APPEND);
             $text = $this->textRelation($class, true);
         }
 
@@ -240,7 +242,7 @@ class FileCreator
         return $text;
     }
 
-    private function getRelation(string $class, bool $extends)
+    private function getRelation(string $class, bool $extends): string
     {
         if ($extends)
         {

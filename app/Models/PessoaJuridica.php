@@ -15,4 +15,5 @@ class PessoaJuridica extends Model
 	{
 		return $this->belongsTo(Pessoa::class);
 	}
+	
 }

@@ -15,4 +15,5 @@ class Pessoa extends Model
 	{
 		return $this->hasOne(Endereco::class);
 	}
+	
 }
