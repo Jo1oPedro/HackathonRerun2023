@@ -8,6 +8,7 @@ class FileCreator
     private ?array $attributes = null;
     private string $lowerName;
     private string $ucFirstName;
+    private array $allClasses;
     private array $controllerContentTemplate = [
         "{model}",
         "{controllerName}",
@@ -158,6 +159,7 @@ class FileCreator
 
     public function createModelWithRelations(string $relation, array $classes)
     {
+        $this->allClasses = $classes;
         if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
@@ -243,13 +245,65 @@ class FileCreator
             $text = $this->textRelation($class, true);
         }
 
+        $listTypes = ["array", "list", "set", "bag"];
+
         foreach ($this->attributes as $attribute) {
             if ($attribute->struct) {
                 $text .= $this->textRelation($attribute->type, false);
             }
+
+            $result = array_reduce($listTypes, function($carry, $item) use ($attribute) {
+                if ($carry || str_contains($attribute->type, $item)) {
+                    return true;
+                }
+                return $carry;
+            }, false);
+
+            if ($result)
+            {
+                preg_match('/<(.*?)>/', $attribute->type, $matches);
+                $type = $matches[1];
+
+                $text .= $this->textRelationMany($type, false);
+                // Volta da relação
+
+                foreach ($this->allClasses as $class)
+                {
+                    if ($class->name == $type)
+                    {
+                        foreach ($class->atributos as $attribute)
+                        {
+                            if(preg_match('/<(.*?)>/', $attribute->type, $matches))
+                            {
+                                var_dump("Comparando $type com $matches[1]");
+                                if ($matches[1] == $type)
+                                {
+                                    var_dump("Passou");
+                                    $content = $this->textRelationMany($type, true);
+                                    file_put_contents(__DIR__ . "/../../app/Models/" . $matches[1] . ".php", $content, FILE_APPEND);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return $text;
+    }
+
+    private function getRelationMany(string $type, bool $extends)
+    {
+        if ($extends) {
+            return 'return $this->belongsToMany(' . ucfirst($type) . '::class);';
+        }
+
+        return 'return $this->hasMany(' . ucfirst($type) . '::class);';
+    }
+
+    private function textRelationMany(string $type, bool $extends)
+    {
+        return "\tpublic function " . strtolower($type) . "()\n\t{\n\t\t" . $this->getRelationMany($type, $extends) . "\n\t}\n";
     }
 
     private function getRelation(string $class, bool $extends): string

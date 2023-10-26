@@ -11,14 +11,19 @@ class Pessoa {
     attribute Endereco endereco;
 };
 
+class Disciplina extends Disciplina {
+    attribute string nome;
+};
+
 class Aluno extends Pessoa {
     attribute string matricula;
-    attribute list<string> disciplinas;
+    attribute list<Disciplina> disciplinas;
+    attribute list<Turma> turmas;
 };
 
 class Professor extends Pessoa {
     attribute string codigoFuncionario;
-    attribute list<string> disciplinasLecionadas;
+    attribute list<Disciplina> disciplinasLecionadas;
 };
 
 class Turma {

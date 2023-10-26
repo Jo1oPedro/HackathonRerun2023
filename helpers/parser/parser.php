@@ -6,4 +6,4 @@ require __DIR__ . '/../../vendor/autoload.php';
 use helpers\fileHelpers\FileCreator;
 use helpers\parser\ClassParser;
 
-ClassParser::createFile('/../../arquivosDeEntrada/arquivoDeEntrada1.txt');
+ClassParser::createFile('/../../arquivosDeEntrada/arquivoDeEntrada2.txt');
