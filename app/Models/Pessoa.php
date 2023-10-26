@@ -11,9 +11,18 @@ class Pessoa extends Model
 
     protected $guarded = [];
 
-    public function endereco()
+	public function endereco()
 	{
 		return $this->hasOne(Endereco::class);
 	}
-	
+
+
+	public function pessoafisica()
+	{
+		return $this->hasOne(PessoaFisica::class);
+	}
+	public function pessoajuridica()
+	{
+		return $this->hasOne(PessoaJuridica::class);
+	}
 }

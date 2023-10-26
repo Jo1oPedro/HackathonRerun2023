@@ -183,6 +183,22 @@ class FileCreator
 
     }
 
+    public static function finalizeModelCreation()
+    {
+        $files =  scandir(__DIR__ . "/../../app/Models");
+        $i = 0;
+
+        foreach ($files as $file)
+        {
+            if ($i < 2)
+            {
+                $i++;
+                continue;
+            }
+            file_put_contents(__DIR__ . "/../../app/Models/". $file, "}", FILE_APPEND);
+        }
+    }
+
     public function createMigration()
     {
         if(empty($this->name)) {
@@ -218,7 +234,7 @@ class FileCreator
 
     private function textRelation(string $class, bool $extends): string
     {
-        return "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}\n\t";
+        return "\tpublic function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}\n";
     }
 
     private function generateRelation(bool $extends, string $class = ""): string
@@ -227,7 +243,7 @@ class FileCreator
         if ($extends)
         {
             $content = $this->textRelation($this->name, false);
-            file_put_contents(__DIR__ . "/../../app/Models/" . $this->ucFirstName . ".php", $content, FILE_APPEND);
+            file_put_contents(__DIR__ . "/../../app/Models/" . $class . ".php", $content, FILE_APPEND);
             $text = $this->textRelation($class, true);
         }
 

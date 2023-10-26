@@ -102,3 +102,5 @@ foreach ($allClasses as $class) {
         ->createModelWithRelations($class->extends, $classes);
 
 }
+
+FileCreator::finalizeModelCreation();

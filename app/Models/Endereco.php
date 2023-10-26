@@ -11,5 +11,6 @@ class Endereco extends Model
 
     protected $guarded = [];
 
-    
+
+
 }

@@ -11,9 +11,10 @@ class PessoaFisica extends Model
 
     protected $guarded = [];
 
-    public function pessoa()
+	public function pessoa()
 	{
 		return $this->belongsTo(Pessoa::class);
 	}
-	
+
+
 }
