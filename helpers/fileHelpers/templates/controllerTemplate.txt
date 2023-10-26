@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class {controllerName}Controller extends Controller
 {
-    //{$attributes}
-
     /**
      * Display a listing of the resource.
      */

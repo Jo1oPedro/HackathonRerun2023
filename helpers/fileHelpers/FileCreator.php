@@ -139,7 +139,8 @@ class FileCreator
     private function getStoreContentWithRelation(string $relation): string
     {
         $relation = ucfirst($relation);
-        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "id =\App\Models\\{$relation}::create(" . '$' . "data);\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+        $lowerRelation = strtolower($relation);
+        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "id =\App\Models\\{$relation}::create(" . '$' . "data)->id;\n\t\t" . '$' . "data = array_merge(" . '$' . "data, ['{$lowerRelation}_id' => " . '$' . "id]);\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
     private function getShowContent(): string

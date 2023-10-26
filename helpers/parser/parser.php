@@ -7,4 +7,4 @@ use helpers\fileHelpers\FileCreator;
 use helpers\parser\ClassParser;
 
 ClassParser::createFile('/../../arquivosDeEntrada/arquivoDeEntrada1.txt');
-//shell_exec("php artisan migrate:fresh");
+shell_exec("php artisan migrate:fresh");
