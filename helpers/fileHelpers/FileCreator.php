@@ -33,11 +33,13 @@ class FileCreator
     ];
 
     private static ?FileCreator $fileCreator = null;
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public static function getInstance(): FileCreator
     {
-        if(is_null(self::$fileCreator)) {
+        if (is_null(self::$fileCreator)) {
             self::$fileCreator = new FileCreator();
         }
         return self::$fileCreator;
@@ -58,10 +60,10 @@ class FileCreator
     }
     public function createController(): FileCreator
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
-        if(is_null($this->attributes)) {
+        if (is_null($this->attributes)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem os atributos');
         }
 
@@ -103,7 +105,7 @@ class FileCreator
         return '$' . "data = " . '$' . "request->all();\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
-    private function getShowContent():string
+    private function getShowContent(): string
     {
         return "view('{$this->lowerName}s.show');";
     }
@@ -115,7 +117,7 @@ class FileCreator
 
     private function getUpdateContent(): string
     {
-        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' ."{$this->lowerName}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "{$this->lowerName}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
     private function getDestroyContent(): string
@@ -126,7 +128,7 @@ class FileCreator
     private function getControllerAttributes(): string
     {
         $content = "";
-        foreach($this->attributes as $attribute) {
+        foreach ($this->attributes as $attribute) {
             $content .= match ($attribute->type) {
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
@@ -138,7 +140,7 @@ class FileCreator
 
     public function createModel()
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
 
@@ -156,15 +158,13 @@ class FileCreator
 
     public function createModelWithRelations(string $relation, array $classes)
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
 
-        if (empty($relation))
-        {
+        if (empty($relation)) {
             $relationContent = $this->generateRelation(false);
-        } else
-        {
+        } else {
             $relationContent = $this->generateRelation(true, $relation);
         }
 
@@ -180,7 +180,6 @@ class FileCreator
         );
         file_put_contents(__DIR__ . "/../../app/Models/" . $this->ucFirstName . ".php", $modelContent);
         return $this;
-
     }
 
     public static function finalizeModelCreation()
@@ -188,20 +187,18 @@ class FileCreator
         $files =  scandir(__DIR__ . "/../../app/Models");
         $i = 0;
 
-        foreach ($files as $file)
-        {
-            if ($i < 2)
-            {
+        foreach ($files as $file) {
+            if ($i < 2) {
                 $i++;
                 continue;
             }
-            file_put_contents(__DIR__ . "/../../app/Models/". $file, "}", FILE_APPEND);
+            file_put_contents(__DIR__ . "/../../app/Models/" . $file, "}", FILE_APPEND);
         }
     }
 
     public function createMigration()
     {
-        if(empty($this->name)) {
+        if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
 
@@ -222,7 +219,7 @@ class FileCreator
     private function getMigrationFields(): string
     {
         $content = "";
-        foreach($this->attributes as $attribute) {
+        foreach ($this->attributes as $attribute) {
             $content .= match ($attribute->type) {
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
@@ -240,17 +237,14 @@ class FileCreator
     private function generateRelation(bool $extends, string $class = ""): string
     {
         $text = "";
-        if ($extends)
-        {
+        if ($extends) {
             $content = $this->textRelation($this->name, false);
             file_put_contents(__DIR__ . "/../../app/Models/" . $class . ".php", $content, FILE_APPEND);
             $text = $this->textRelation($class, true);
         }
 
-        foreach ($this->attributes as $attribute)
-        {
-            if ($attribute->struct)
-            {
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->struct) {
                 $text .= $this->textRelation($attribute->type, false);
             }
         }
@@ -260,12 +254,81 @@ class FileCreator
 
     private function getRelation(string $class, bool $extends): string
     {
-        if ($extends)
-        {
+        if ($extends) {
             return 'return $this->belongsTo(' . ucfirst($class) . '::class);';
         }
 
         return 'return $this->hasOne(' . ucfirst($class) . '::class);';
+    }
 
+    private function getMigrationRelationships(): string
+    {
+        $content = "";
+        foreach ($this->attributes as $attribute) {
+            if (!in_array($attribute->type, ['string', 'int', 'float'])) {
+                $tableName = strtolower($attribute->value);
+                $foreigngName = $tableName . "_id";
+                $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+            }
+        }
+        return $content;
+    }
+
+    private function verifyRelationshipsManyToMany($classes, $classAux, $nameClass)
+    {
+        if (substr($nameClass, -1) === 's') {
+            $nameClass = rtrim($nameClass, 's');
+        }
+        foreach ($classes as $class) {
+            if ($class->name == $nameClass) {
+                foreach ($class->atributos as $atributo) {
+                    if (!in_array($atributo->type, ['string', 'int', 'float']) && strpos($atributo->type, 'list') !== false && strpos($atributo->type, $classAux->name) !== false) {
+                        return $class;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function createMigrationRelationships($classes): string
+    {
+        $content = "";
+        $migrateRelationships = [];
+        foreach ($classes as $class) {
+            foreach ($class->atributos as $atributo) {
+                if (!in_array($atributo->type, ['string', 'int', 'float'])) {
+                    $tableName = strtolower($atributo->value);
+                    $foreigngName = $tableName . "_id";
+                    if (strpos($atributo->type, 'list') !== false) {
+                        $manyToMany = $this->verifyRelationshipsManyToMany($classes, $class, ucfirst($atributo->value));
+                        if ($manyToMany !== false) {
+                            //$this->createTablePivot();
+                            $tableName = (string)$class->name . "_" . $manyToMany->name;
+                            $foreigngName = $tableName . "_id";
+                            $content .= (string)$class->name . "\n\t\t";
+                            $content .= "MANYTOMANY" . "\n\t\t";
+                            continue;
+                        }
+                        //$content .= ucfirst($tableName) . "\n\t\t";
+                        $tableName = $class->name;
+                        $foreigngName = $tableName . "_id";
+                        $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                        $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+                        $migrateRelationships[$tableName][] = $content;
+                        continue;
+                    }
+                    //$content .= $class->name . "\n\t\t";
+                    $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                    $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+                    $migrateRelationships[$class->name][] = $content;
+                    continue;
+                }
+                $content = "";
+            }
+        }
+        var_dump($migrateRelationships);
+        return $content;
     }
 }
