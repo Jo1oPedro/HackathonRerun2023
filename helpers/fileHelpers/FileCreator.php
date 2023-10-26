@@ -179,7 +179,7 @@ class FileCreator
             $migrationContent
         );
         file_put_contents(__DIR__ . "/../../database/migrations/" . date("Y_m_d_His") .  "_create_{$lowerName}s_table.php", $migrationContent);
-        shell_exec("php artisan migrate:fresh");
+        //shell_exec("php artisan migrate:fresh");
         return $this;
     }
 
@@ -191,6 +191,8 @@ class FileCreator
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
                 "float" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
+                "long" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
+                "short" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
                 default => ""
             };
         }
@@ -219,14 +221,6 @@ class FileCreator
         $migrationsRelationships = [];
         $manyToManyVerify = [];
         foreach($classes as $class) {
-            if($class->extends) {
-                var_dump($class->name . " " . $class->extends);
-                $tableName = strtolower($class->extends) . "s";
-                $foreigngName = strtolower($class->extends) . "_id";
-                $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
-                $content .=  '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
-                $migrationsRelationships[$class->name] = $content;
-            }
             foreach($class->atributos as $atributo) {
                 if(!in_array($atributo->type, ['string', 'int', 'float', 'long'])) {
                     $tableName = strtolower($atributo->value);
@@ -273,6 +267,13 @@ class FileCreator
                     continue;
                 }
                 $content = "";
+            }
+            if($class->extends) {
+                $tableName = strtolower($class->extends) . "s";
+                $foreigngName = strtolower($class->extends) . "_id";
+                $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
+                $content .=  '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
+                $migrationsRelationships[strtolower($class->name)] = $content;
             }
         }
 

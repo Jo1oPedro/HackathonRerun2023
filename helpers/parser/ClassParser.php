@@ -102,7 +102,7 @@ class ClassParser
     }
     public static function createFile($file) {
         self::parseFile($file);
-        $allClasses = array_merge(self::$classes, self::$classesWithExtends, self::$structs);
+        //$allClasses = array_merge(self::$classes, self::$classesWithExtends, self::$structs);
 
         foreach(self::$structs as $struct) {
             $content = FileCreator::getInstance()
@@ -127,7 +127,6 @@ class ClassParser
 
         $migrationRelationships = FileCreator::getInstance()
         ->createMigrationRelationships(self::$classes);
-        var_dump($migrationRelationships);
         foreach(self::$classes as $class) {
             $content = $migrationAttr[strtolower($class->name)];
             if(isset($migrationRelationships[strtolower($class->name)])) {
