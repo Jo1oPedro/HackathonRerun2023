@@ -9,6 +9,8 @@ class FileCreator
     private string $lowerName;
     private string $ucFirstName;
     private array $allRelations = [];
+
+    private array $modelFillable = [];
     private array $controllerContentTemplate = [
         "{model}",
         "{controllerName}",
@@ -77,13 +79,13 @@ class FileCreator
                     $this->ucFirstName,
                     //$this->getAttributes(),
                     $this->ucFirstName . " $" . $this->lowerName,
-                    $this->getIndexContentWithRelation($classes[$this->name]->extends),
+                    $this->getIndexContentWithRelation(),
                     $this->getCreateContent(),
                     $this->getStoreContentWithRelation($classes[$this->name]->extends),
-                    $this->getShowContent(),
+                    $this->getShowContentWithRelation(),
                     $this->getEditContentWithRelation(),
-                    $this->getUpdateContentWithRelation(),
-                    $this->getDestroyContentWithRelation(),
+                    $this->getUpdateContentWithRelation($classes[$this->name]->extends),
+                    $this->getDestroyContentWithRelation($classes[$this->name]->extends),
                 ],
                 $controllerContent
             );
@@ -137,12 +139,17 @@ class FileCreator
     private function getStoreContentWithRelation(string $relation): string
     {
         $relation = ucfirst($relation);
-        return '$' . "data = " . '$' . "request->all();\n\t\t{$relation}::create(" . '$' . "data);\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "id =\App\Models\\{$relation}::create(" . '$' . "data);\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
     private function getShowContent(): string
     {
-        return "view('{$this->lowerName}s.show');";
+        return "view('{$this->lowerName}s.show', compact('{$this->lowerName}'));";
+    }
+
+    private function getShowContentWithRelation(): string
+    {
+        return '$' ."{$this->lowerName}->load('*');\n\t\tview('{$this->lowerName}s.show', compact('{$this->lowerName}'));";
     }
 
     private function getEditContent(): string
@@ -152,7 +159,7 @@ class FileCreator
 
     private function getEditContentWithRelation(): string
     {
-        return "view('{$this->lowerName}s.edit', compact('{$this->lowerName}'));";
+        return '$' ."{$this->lowerName}->load('*');\n\t\tview('{$this->lowerName}s.edit', compact('{$this->lowerName}'));";
     }
 
     private function getUpdateContent(): string
@@ -160,9 +167,20 @@ class FileCreator
         return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "{$this->lowerName}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
+    private function getUpdateContentWithRelation(string $relation): string
+    {
+        $relation = strtolower($relation);
+        return '$' . "data = " . '$' . "request->all();\n\t\t" . '$' . "{$this->lowerName}->update(" . '$' . "data);\n\t\t" . '$' . "{$relation}= $" . "{$this->lowerName}->{$relation};\n\t\t" . '$' . "{$relation}->update(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+    }
+
     private function getDestroyContent(): string
     {
         return '$' . "{$this->lowerName}->delete();\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+    }
+
+    private function getDestroyContentWithRelation(string $relation): string {
+        $relation = strtolower($relation);
+        return '$' . "{$this->lowerName}->{$relation}->delete();\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
     private function getControllerAttributes(): string
@@ -230,9 +248,9 @@ class FileCreator
             $content .= match ($attribute->type) {
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
-                "float" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
-                "long" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
-                "short" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
+                "float" => '$' . "table->float('{$attribute->value}', 8, 2);\n\t\t",
+                "long" => '$' . "table->float('{$attribute->value}', 8, 2);\n\t\t",
+                "short" => '$' . "table->float('{$attribute->value}', 8, 2);\n\t\t",
                 default => ""
             };
         }
@@ -263,6 +281,7 @@ class FileCreator
         foreach($classes as $class) {
             foreach($class->atributos as $atributo) {
                 if(!in_array($atributo->type, ['string', 'int', 'float', 'long'])) {
+                    $this->modelFillable[$class->name][] = strtolower($atributo->value) . "_id";
                     $this->allRelations[$class->name][] = strtolower($atributo->type);
                     $tableName = strtolower($atributo->value);
                     $foreigngName = $tableName . "_id";
@@ -306,11 +325,14 @@ class FileCreator
                         $migrationsRelationships[strtolower($class->name)] = $content;
                     }
                     continue;
+                } else {
+                    $this->modelFillable[$class->name][] = $atributo->value;
                 }
                 $content = "";
             }
             if($class->extends) {
                 $this->allRelations[$class->name][] = strtolower($class->extends);
+                $this->modelFillable[$class->name][] = strtolower($class->extends . "_id");
                 $tableName = strtolower($class->extends) . "s";
                 $foreigngName = strtolower($class->extends) . "_id";
                 $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
@@ -395,10 +417,14 @@ class FileCreator
             $data = $this->allRelations[$name];
             $data = '"'. implode(',', $data) . '"';
 
+            $fieldFillables = $this->modelFillable[$name];
+            $fieldFillables = '"'. implode('","', $fieldFillables) . '"';
+
             $tableName = strtolower($name) . 's';
 
             file_put_contents(__DIR__ . "/../../app/Models/" . $file, "\t". 'protected $table = '. "'$tableName'" .  ";\n", FILE_APPEND);
             file_put_contents(__DIR__ . "/../../app/Models/" . $file, "\t". 'public $allRelations = array(' . $data . ');' . "\n", FILE_APPEND);
+            file_put_contents(__DIR__ . "/../../app/Models/" . $file, "\t". 'protected $fillable = ['. "$fieldFillables" .  "];\n", FILE_APPEND);
             file_put_contents(__DIR__ . "/../../app/Models/" . $file, "}", FILE_APPEND);
         }
     }
