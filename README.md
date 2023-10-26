@@ -10,8 +10,12 @@ Esse repositório foi utilizado para o hackathon da rerun durante a semana da co
 2. Instale as dependências necessárias: `composer install`;
 3. Atualize as dependências: `composer update`;
 7. Crie um banco de dados `sql` com o nome de `laravel`;
+8. Renomeie o .env.example para .env
 
 ## Como executar o projeto
+A estrutura do projeto foi feita para funcionar na WEB, ou seja, os métodos foram implementados para funcionar com um front-end.
+Ao executar, você receberá uma mensagem de erro pois estamos utilizado a versão de terminal, mas você pode ver o resultado final no banco de dados que estiver conectado, recomendamos o PHPMyadmin.
+
 1. Para criar a estrutura do projeto através de um arquivo odl, execute o comando no terminal dentro da raiz do projeto: php parser/parser.php 
 2. Dentro do terminal digite: php artisan tinker.
 
