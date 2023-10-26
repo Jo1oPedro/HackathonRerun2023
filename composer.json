@@ -22,10 +22,14 @@
     },
     "autoload": {
         "psr-4": {
+            "helpers\\": "helpers/",
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files:": [
+            "helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
