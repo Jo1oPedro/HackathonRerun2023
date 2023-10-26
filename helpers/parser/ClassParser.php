@@ -4,7 +4,7 @@ namespace helpers\parser;
 use helpers\fileHelpers\FileCreator;
 
 class ClassParser
-{   
+{
 
     private static $classes;
     private static $structs;
@@ -77,7 +77,7 @@ class ClassParser
                     $object->name = $objectName;
                     $object->type = $objectType;
                     $object->extends = $extendsAux;
-                    $object->atributos = self::parseAttributes($attributes);              
+                    $object->atributos = self::parseAttributes($attributes);
                     if (isset($object->type)) {
                         if ($object->type === 'struct') {
                             self::$structs[$object->name] = $object;
@@ -102,22 +102,15 @@ class ClassParser
     }
     public static function createFile($file) {
         self::parseFile($file);
-        //var_dump(self::$classes);exit;
+        $allClasses = array_merge(self::$classes, self::$classesWithExtends, self::$structs);
 
-        $r = FileCreator::getInstance()
-        ->createMigrationRelationships(self::$classes);
-        var_dump($r);exit;
-        
-
-        //var_dump(self::$classes);exit;
-        foreach (self::$classes as $class) {
-            //die(var_dump($class->atributos));
+        foreach ($allClasses as $class) {
             FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
-                // ->createController()
-                // ->createModel()
-                ->createMigration();
+                ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
+
+        FileCreator::finalizeModelCreation();
     }
 }
