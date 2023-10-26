@@ -27,5 +27,6 @@ class OdlParser extends Command
     public function handle()
     {
         ClassParser::createFile("/../../arquivosDeEntrada/{$this->argument('file_path')}");
+        shell_exec("php artisan migrate:fresh");
     }
 }

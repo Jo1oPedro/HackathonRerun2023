@@ -348,7 +348,7 @@ class FileCreator
     public function createModelWithRelations(string $relation, array $classes): FileCreator
     {
         if (empty($this->name)) {
-            throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
+            throw new \InvalidArgumentException('Não é possível criar a Model sem um nome');
         }
 
         if (empty($relation)) {
