@@ -146,3 +146,193 @@ Route::get('/escola', [App\Http\Controllers\RoleController::class, 'index']);
 Route::post('/escola', [App\Http\Controllers\RoleController::class, 'store']);
 Route::put('/escola/escola', [App\Http\Controllers\RoleController::class, 'update']);
 Route::delete('/escola', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoa', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoa', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoa/pessoa', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoa', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoafisica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoafisica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoafisica/pessoafisica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoafisica', [App\Http\Controllers\RoleController::class, 'destroy']);
+
+Route::get('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'index']);
+Route::post('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'store']);
+Route::put('/pessoajuridica/pessoajuridica', [App\Http\Controllers\RoleController::class, 'update']);
+Route::delete('/pessoajuridica', [App\Http\Controllers\RoleController::class, 'destroy']);

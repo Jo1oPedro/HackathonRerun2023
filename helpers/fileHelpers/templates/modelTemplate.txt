@@ -11,5 +11,27 @@ class {modelName} extends Model
 
     protected $guarded = [];
 
+    public static function with($relations){
+            $instance = new static;
+            if($relations == '*'){
+                $relations = $instance->allRelations;
+            }
+            else if(is_string($relations)){
+                $relations = func_get_args();
+            }
+            return $instance->newQuery()->with($relations);
+        }
+
+        public function load($relations){
+            $instance = new static;
+            if($relations == '*'){
+                $relations = $instance->allRelations;
+            }
+            else if(is_string($relations)){
+                $relations = func_get_args();
+            }
+            return $instance->newQuery()->with($relations);
+        }
+
 {content}
 

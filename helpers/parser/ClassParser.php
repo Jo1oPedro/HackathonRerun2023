@@ -127,12 +127,13 @@ class ClassParser
 
         $migrationRelationships = FileCreator::getInstance()
         ->createMigrationRelationships(self::$classes);
+        $creator = null;
         foreach(self::$classes as $class) {
             $content = $migrationAttr[strtolower($class->name)];
             if(isset($migrationRelationships[strtolower($class->name)])) {
                 $content .=  $migrationRelationships[strtolower($class->name)];
             }
-            FileCreator::getInstance()
+            $creator = FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
                 ->createMigration($content)
@@ -140,6 +141,6 @@ class ClassParser
                 ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
 
-        FileCreator::finalizeModelCreation();
+        $creator->finalizeModelCreation();
     }
 }

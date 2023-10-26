@@ -8,6 +8,7 @@ class FileCreator
     private ?array $attributes = null;
     private string $lowerName;
     private string $ucFirstName;
+    private array $allRelations = [];
     private array $controllerContentTemplate = [
         "{model}",
         "{controllerName}",
@@ -223,6 +224,7 @@ class FileCreator
         foreach($classes as $class) {
             foreach($class->atributos as $atributo) {
                 if(!in_array($atributo->type, ['string', 'int', 'float', 'long'])) {
+                    $this->allRelations[$class->name][] = strtolower($atributo->type);
                     $tableName = strtolower($atributo->value);
                     $foreigngName = $tableName . "_id";
                     if(strpos($atributo->type, 'list') !== false ) {
@@ -269,6 +271,7 @@ class FileCreator
                 $content = "";
             }
             if($class->extends) {
+                $this->allRelations[$class->name][] = strtolower($class->extends);
                 $tableName = strtolower($class->extends) . "s";
                 $foreigngName = strtolower($class->extends) . "_id";
                 $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
@@ -338,7 +341,7 @@ class FileCreator
         return 'return $this->hasOne(' . ucfirst($class) . '::class);';
     }
 
-    public static function finalizeModelCreation()
+    public function finalizeModelCreation()
     {
         $files =  scandir(__DIR__ . "/../../app/Models");
         $i = 0;
@@ -348,6 +351,15 @@ class FileCreator
                 $i++;
                 continue;
             }
+
+            $name = str_replace(".php", "", $file);
+            $data = $this->allRelations[$name];
+            $data = '"'. implode(',', $data) . '"';
+
+            $tableName = strtolower($name) . 's';
+
+            file_put_contents(__DIR__ . "/../../app/Models/" . $file, "\t". 'protected $table = '. "'$tableName'" .  ";\n", FILE_APPEND);
+            file_put_contents(__DIR__ . "/../../app/Models/" . $file, "\t". 'public $allRelations = array(' . $data . ');' . "\n", FILE_APPEND);
             file_put_contents(__DIR__ . "/../../app/Models/" . $file, "}", FILE_APPEND);
         }
     }
