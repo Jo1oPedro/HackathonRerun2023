@@ -129,6 +129,6 @@ class ClassParser
                 ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
 
-        //FileCreator::finalizeModelCreation();
+        FileCreator::finalizeModelCreation();
     }
 }
