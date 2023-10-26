@@ -9,8 +9,10 @@ class PessoaFisica extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function pessoa()
 	{
-		return $this->hasOne(Pessoa::class);
+		return $this->belongsTo(Pessoa::class);
 	}
 }

@@ -162,10 +162,12 @@ class FileCreator
 
         if (empty($relation))
         {
-            return $this->createModel();
+            $relationContent = $this->generateRelation(false);
+        } else
+        {
+            $relationContent = $this->generateRelation(true, $relation);
         }
 
-        $relationContent = $this->generateRelation($relation, true);
 
         $modelContent = file_get_contents(__DIR__ . "/templates/modelTemplate.txt");
         $modelContent = str_replace(
@@ -214,14 +216,27 @@ class FileCreator
         return $content;
     }
 
-    private function verifyRelations(string $class, array $classes)
+    private function textRelation(string $class, bool $extends)
     {
-
+        return "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}";
     }
 
-    private function generateRelation(string $class, bool $extends)
+    private function generateRelation(bool $extends, string $class = "")
     {
-        $text = "public function " . strtolower($class) . "()\n\t{\n\t\t" . $this->getRelation($class, $extends) . "\n\t}";
+        $text = "";
+        if ($extends)
+        {
+            $text = $this->textRelation($class, true);
+        }
+
+        foreach ($this->attributes as $attribute)
+        {
+            if ($attribute->struct)
+            {
+                $text .= $this->textRelation($attribute->type, false);
+            }
+        }
+
         return $text;
     }
 
@@ -229,12 +244,10 @@ class FileCreator
     {
         if ($extends)
         {
-            return 'return $this->hasOne(' . ucfirst($class) . '::class);';
+            return 'return $this->belongsTo(' . ucfirst($class) . '::class);';
         }
 
-        foreach ($this->attributes as $attribute)
-        {
+        return 'return $this->hasOne(' . ucfirst($class) . '::class);';
 
-        }
     }
 }

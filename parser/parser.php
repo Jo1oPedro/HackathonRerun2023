@@ -93,7 +93,7 @@ foreach ($lines as $line) {
 //        ->createMigration();
 //}
 
-$allClasses = array_merge($classes, $classesWithExtends);
+$allClasses = array_merge($classes, $classesWithExtends, $structs);
 
 foreach ($allClasses as $class) {
     FileCreator::getInstance()
