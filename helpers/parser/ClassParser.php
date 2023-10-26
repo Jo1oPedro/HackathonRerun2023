@@ -102,22 +102,28 @@ class ClassParser
     }
     public static function createFile($file) {
         self::parseFile($file);
-        //var_dump(self::$classes);exit;
 
-        $r = FileCreator::getInstance()
-        ->createMigrationRelationships(self::$classes);
-        var_dump($r);exit;
-        
-
-        //var_dump(self::$classes);exit;
+        $migrationAttr = [];
         foreach (self::$classes as $class) {
-            //die(var_dump($class->atributos));
+            $content = FileCreator::getInstance()
+                ->setName($class->name)
+                ->setAttributes($class->atributos)
+                ->getMigrationFields();
+            $migrationAttr[strtolower($class->name)] = $content;
+        }
+
+        $migrationRelationships = FileCreator::getInstance()
+        ->createMigrationRelationships(self::$classes);
+
+        foreach(self::$classes as $class) {
+            $content = $migrationAttr[strtolower($class->name)];
+            if(isset($migrationRelationships[strtolower($class->name)])) {
+                $content .=  $migrationRelationships[strtolower($class->name)];
+            }
             FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
-                // ->createController()
-                // ->createModel()
-                ->createMigration();
+                ->createMigration($content);
         }
     }
 }

@@ -154,9 +154,16 @@ class FileCreator
         return $this;
     }
 
-    public function createMigration()
+    public function createMigration($content, $nameParam = null)
     {
-        if(empty($this->name)) {
+        $name = $this->name;
+        $lowerName = $this->lowerName;
+        if($nameParam) {
+            $name = $nameParam;
+            $lowerName = strtolower($nameParam);
+        }
+
+        if(empty($name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
         }
 
@@ -164,17 +171,17 @@ class FileCreator
         $migrationContent = str_replace(
             $this->migrationContentTemplate,
             [
-                "{$this->lowerName}s",
-                $this->getMigrationFields()
+                "{$lowerName}s",
+                "$content"
             ],
             $migrationContent
         );
-        file_put_contents(__DIR__ . "/../../database/migrations/" . date("Y_m_d_His") .  "_create_{$this->lowerName}s_table.php", $migrationContent);
+        file_put_contents(__DIR__ . "/../../database/migrations/" . date("Y_m_d_His") .  "_create_{$lowerName}s_table.php", $migrationContent);
         //shell_exec("php artisan migrate:fresh");
         return $this;
     }
 
-    private function getMigrationFields(): string
+    public function getMigrationFields(): string
     {
         $content = "";
         foreach($this->attributes as $attribute) {
@@ -182,21 +189,8 @@ class FileCreator
                 'string' => '$' . "table->string('{$attribute->value}', 191);\n\t\t",
                 "int" => '$' . "table->integer('{$attribute->value}');\n\t\t",
                 "float" => '$' . "table->float('{$attribute->value}, 8, 2');\n\t\t",
+                default => ""
             };
-        }
-        return $content;
-    }
-
-    private function getMigrationRelationships(): string
-    {
-        $content = "";
-        foreach($this->attributes as $attribute) {
-            if(!in_array($attribute->type, ['string', 'int', 'float'])) {
-                $tableName = strtolower($attribute->value);
-                $foreigngName = $tableName . "_id";
-                $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
-                $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
-            }
         }
         return $content;
     }
@@ -217,43 +211,61 @@ class FileCreator
         return false;
     }
 
-    public function createMigrationRelationships($classes): string
+    public function createMigrationRelationships($classes)
     {
         $content = "";
-        $migrateRelationships = [];
+        $migrationsRelationships = [];
+        $manyToManyVerify = [];
         foreach($classes as $class) {
             foreach($class->atributos as $atributo) {
                 if(!in_array($atributo->type, ['string', 'int', 'float'])) {
                     $tableName = strtolower($atributo->value);
                     $foreigngName = $tableName . "_id";
-                    if(strpos($atributo->type, 'list') !== false) {
+                    if(strpos($atributo->type, 'list') !== false ) {                     
                         $manyToMany = $this->verifyRelationshipsManyToMany($classes, $class, ucfirst($atributo->value));
-                        if($manyToMany !== false) {
-                            //$this->createTablePivot();
-                            $tableName = (string)$class->name . "_" . $manyToMany->name;
-                            $foreigngName = $tableName . "_id";
-                            $content .= (string)$class->name . "\n\t\t";
-                            $content .= "MANYTOMANY" . "\n\t\t";
+                        if($manyToMany !== false && !in_array($class->name, $manyToManyVerify) && !in_array($manyToMany->name, $manyToManyVerify)) {
+                            $tableName1 = strtolower($class->name);
+                            $tableName2 = strtolower($manyToMany->name);
+                            $tableNameAux = $tableName1 . "_" . $tableName2;
+                            $foreigngName1 = strtolower($class->name) . "_id";
+                            $foreigngName2 = strtolower($manyToMany->name) . "_id";
+                            $content = "";
+                            $content .= '$' . "table->unsignedBigInteger('{$foreigngName1}');\n\t\t";
+                            $content .= '$' . "table->unsignedBigInteger('{$foreigngName2}');\n\t\t";
+                            $content .= '$' . "table->foreign('{$foreigngName1}')->references('id')->on('{$tableName1}')->onDelete('cascade');\n\t\t";
+                            $content .= '$' . "table->foreign('{$foreigngName2}')->references('id')->on('{$tableName2}')->onDelete('cascade');\n\t\t";
+                            $this->createMigration($content, $tableNameAux);
+                            $manyToManyVerify[] = $class->name;
                             continue;
                         }
-                        //$content .= ucfirst($tableName) . "\n\t\t";
-                        $tableName = $class->name;
-                        $foreigngName = $tableName . "_id";
+                        $tableNameIndex= $tableName;
+                        if (substr($tableNameIndex, -1) === 's') {
+                            $tableNameIndex = rtrim($tableNameIndex, 's');
+                        }
+                        $tableName = strtolower($class->name);
+                        $foreigngName = strtolower($tableName . "_id");
                         $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
                         $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
-                        $migrateRelationships[$tableName][] = $content;
+                        if(isset($migrationsRelationships[strtolower($tableNameIndex)])) {
+                            $migrationsRelationships[strtolower($tableNameIndex)] = $migrationsRelationships[strtolower($tableNameIndex)] . $content;
+                        }else {
+                            $migrationsRelationships[strtolower($tableNameIndex)] = $content;
+                        }
                         continue;
                     }
-                    //$content .= $class->name . "\n\t\t";
                     $content .= '$' . "table->unsignedBigInteger('{$foreigngName}');\n\t\t";
                     $content .= '$' . "table->foreign('{$foreigngName}')->references('id')->on('{$tableName}')->onDelete('cascade');\n\t\t";
-                    $migrateRelationships[$class->name][] = $content;
+                    if(isset($migrationsRelationships[strtolower($tableName)])) {
+                        $migrationsRelationships[strtolower($class->name)] = $migrationsRelationships[strtolower($tableName)] . $content;
+                    }else {
+                        $migrationsRelationships[strtolower($class->name)] = $content;
+                    }
                     continue;
                 } 
                 $content = "";
             }
         }   
-        var_dump($migrateRelationships);
-        return $content;
+
+        return $migrationsRelationships;
     }
 }
