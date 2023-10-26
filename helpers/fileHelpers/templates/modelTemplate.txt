@@ -11,5 +11,8 @@ class {modelName} extends Model
 
     protected $guarded = [];
 
+    public $allRelations = array('foo', 'bar');
+
 {content}
+
 

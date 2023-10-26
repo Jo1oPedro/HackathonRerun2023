@@ -58,7 +58,7 @@ class FileCreator
         $this->attributes = $attributes;
         return $this;
     }
-    public function createController(): FileCreator
+    public function createController(array $classes): FileCreator
     {
         if (empty($this->name)) {
             throw new \InvalidArgumentException('Não é possível criar o controller sem um nome');
@@ -68,6 +68,29 @@ class FileCreator
         }
 
         $controllerContent = file_get_contents(__DIR__ . "/templates/controllerTemplate.txt");
+        if($classes[$this->name]->extends) {
+            $controllerContent = str_replace(
+                $this->controllerContentTemplate,
+                [
+                    $this->ucFirstName,
+                    $this->ucFirstName,
+                    //$this->getAttributes(),
+                    $this->ucFirstName . " $" . $this->lowerName,
+                    $this->getIndexContentWithRelation($classes[$this->name]->extends),
+                    $this->getCreateContent(),
+                    $this->getStoreContentWithRelation($classes[$this->name]->extends),
+                    $this->getShowContent(),
+                    $this->getEditContentWithRelation(),
+                    $this->getUpdateContentWithRelation(),
+                    $this->getDestroyContentWithRelation(),
+                ],
+                $controllerContent
+            );
+            file_put_contents(__DIR__ . "/../../app/Http/Controllers/" . $this->ucFirstName . "Controller.php", $controllerContent);
+            FileWriter::getInstance()->writeRoute($this->name);
+            return $this;
+        }
+
         $controllerContent = str_replace(
             $this->controllerContentTemplate,
             [
@@ -95,6 +118,11 @@ class FileCreator
         return '$' . $this->lowerName . "= " . $this->ucFirstName . "::all();\n\t\treturn view('{$this->lowerName}s.index');";
     }
 
+    private function getIndexContentWithRelation(): string
+    {
+        return '$' . $this->lowerName . "= " . $this->ucFirstName . "::with('*')->get();\n\t\treturn view('{$this->lowerName}s.index');";
+    }
+
     private function getCreateContent(): string
     {
         return "view('{$this->lowerName}s.create');";
@@ -105,12 +133,23 @@ class FileCreator
         return '$' . "data = " . '$' . "request->all();\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
     }
 
+    private function getStoreContentWithRelation(string $relation): string
+    {
+        $relation = ucfirst($relation);
+        return '$' . "data = " . '$' . "request->all();\n\t\t{$relation}::create(" . '$' . "data);\n\t\t{$this->ucFirstName}::create(" . '$' . "data);\n\t\treturn redirect()->route('{$this->lowerName}s.index')->with('sucess', true);";
+    }
+
     private function getShowContent(): string
     {
         return "view('{$this->lowerName}s.show');";
     }
 
     private function getEditContent(): string
+    {
+        return "view('{$this->lowerName}s.edit', compact('{$this->lowerName}'));";
+    }
+
+    private function getEditContentWithRelation(): string
     {
         return "view('{$this->lowerName}s.edit', compact('{$this->lowerName}'));";
     }

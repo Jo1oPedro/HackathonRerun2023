@@ -136,7 +136,7 @@ class ClassParser
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
                 ->createMigration($content)
-                ->createController()
+                ->createController(self::$classes)
                 ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
 
