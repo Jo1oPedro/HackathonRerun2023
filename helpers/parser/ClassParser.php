@@ -102,6 +102,7 @@ class ClassParser
     }
     public static function createFile($file) {
         self::parseFile($file);
+        $allClasses = array_merge(self::$classes, self::$classesWithExtends, self::$structs);
 
         $migrationAttr = [];
         foreach (self::$classes as $class) {
@@ -123,7 +124,9 @@ class ClassParser
             FileCreator::getInstance()
                 ->setName($class->name)
                 ->setAttributes($class->atributos)
-                ->createMigration($content);
+                ->createMigration($content)
+                ->createController()
+                ->createModelWithRelations($class->extends ?? "", self::$classes);
         }
     }
 }
